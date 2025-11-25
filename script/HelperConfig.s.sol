@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-// forge-lint: disable-next-line(unused-import)
 import {Script, console} from "forge-std/Script.sol";
-
 import {MockV3Aggregator} from "@chainlink/src/v0.8/tests/MockV3Aggregator.sol";
 import {AggregatorV3Interface} from "@chainlink/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
@@ -17,7 +15,7 @@ contract HelperConfig is Script {
     AggregatorV3Interface mockPriceFeed;
 
     struct NetworkConfig {
-        address priceFeed; // ETH/USD price feed address
+        address priceFeed;
         uint256 feedVersion;
     }
 

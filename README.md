@@ -1,66 +1,145 @@
-## Foundry
+# Fund Me
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+**Fund Me** is a decentralized crowdfunding application built with Solidity and Foundry. It allows users to fund the contract with ETH, ensuring a minimum USD value using Chainlink Price Feeds. The contract owner can then withdraw the accumulated funds.
 
-Foundry consists of:
+## Features
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- **Fund with ETH:** Users can send ETH to the contract.
+- **Minimum Funding Amount:** Enforces a minimum funding amount in USD (e.g., $5 USD).
+- **Chainlink Price Feeds:** Uses Chainlink Oracles to convert ETH to USD for accurate value assessment.
+- **Owner Withdrawal:** Only the contract owner can withdraw the funds.
+- **Optimized:** Uses `immutable` and `constant` variables for gas efficiency.
 
-## Documentation
+## Getting Started
 
-https://book.getfoundry.sh/
+### Prerequisites
+
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [Foundry](https://getfoundry.sh/)
+
+### Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/your-username/fund-me.git
+   cd fund-me
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   make install
+   # Or manually:
+   forge install
+   ```
 
 ## Usage
 
 ### Build
 
-```shell
-$ forge build
+Compile the contracts:
+
+```bash
+make build
+# Or:
+forge build
 ```
 
 ### Test
 
-```shell
-$ forge test
+Run the test suite (unit and integration tests):
+
+```bash
+make test
+# Or:
+forge test
 ```
 
-### Format
+To run tests with a specific fork or other options, you can use standard `forge test` flags.
 
-```shell
-$ forge fmt
+### Local Development (Anvil)
+
+Start a local Anvil chain:
+
+```bash
+make anvil
 ```
 
-### Gas Snapshots
+Deploy to the local chain:
 
-```shell
-$ forge snapshot
+```bash
+make deploy
 ```
 
-### Anvil
+### ZkSync
 
-```shell
-$ anvil
+**Prerequisites:**
+
+- [foundry-zksync](https://github.com/matter-labs/foundry-zksync)
+
+To install/update `foundry-zksync`:
+
+```bash
+make zkfoundry
 ```
 
-### Deploy
+**Build for ZkSync:**
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```bash
+make zkbuild
 ```
 
-### Cast
+**Local ZkSync Chain (anvil-zksync):**
 
-```shell
-$ cast <subcommand>
+Start the node:
+
+```bash
+make zkanvil
 ```
 
-### Help
+Deploy to local ZkSync chain:
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+```bash
+make zkdeploy
 ```
+
+Stop the node:
+
+```bash
+make stop-zkanvil
+```
+
+## Scripts
+
+The project includes several scripts in the `script` directory:
+
+- `DeployFundMe.s.sol`: Deploys the `FundMe` contract.
+- `HelperConfig.s.sol`: Manages configuration for different networks (e.g., Sepolia, Mainnet, Anvil).
+- `Interactions.s.sol`: Contains scripts for interacting with the contract (funding and withdrawing).
+
+## Makefile Commands
+
+This project uses a `Makefile` to simplify common tasks:
+
+- `make all`: Clean and run tests.
+- `make clean`: Clean artifacts, cache, and dependencies.
+- `make install`: Install Foundry dependencies.
+- `make build`: Compile the project.
+- `make zkbuild`: Compile the project for ZkSync.
+- `make test`: Run tests.
+- `make anvil`: Start a local Anvil node.
+- `make zkanvil`: Start a local ZkSync Anvil node.
+- `make deploy`: Deploy to Anvil.
+- `make zkdeploy`: Deploy to ZkSync Anvil.
+- `make stop-anvil`: Stop the running Anvil node.
+- `make stop-zkanvil`: Stop the running ZkSync Anvil node.
+- `make zkfoundry`: Update Foundry for ZKsync.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

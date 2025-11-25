@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-// Note: The AggregatorV3Interface might be at a different location than what was in the video!
 import {AggregatorV3Interface} from "@chainlink/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import {PriceConverter} from "./PriceConverter.sol";
 error NotOwner();
@@ -11,10 +10,8 @@ contract FundMe {
 
     mapping(address => uint256) public s_addressToAmountFunded;
     address[] public s_funders;
-
     AggregatorV3Interface private s_priceFeed;
 
-    // Could we make this constant?  /* hint: no! We should make it immutable! */
     address private immutable i_owner;
     uint256 public constant MINIMUM_USD = 5e18;
 
@@ -43,45 +40,19 @@ contract FundMe {
     }
 
     function withdraw() public onlyOwner {
-        for (uint256 funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
-            address funder = s_funders[funderIndex];
-            s_addressToAmountFunded[funder] = 0;
-        }
-        s_funders = new address[](0);
-        // // transfer
-        // payable(msg.sender).transfer(address(this).balance);
-
-        // // send
-        // bool sendSuccess = payable(msg.sender).send(address(this).balance);
-        // require(sendSuccess, "Send failed");
-
-        // call
-        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
-        require(callSuccess, "Call failed");
-    }
-
-    function cheaperWithdraw() public onlyOwner {
         uint256 fundersLength = s_funders.length;
+
         for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
+
         s_funders = new address[](0);
-        // // transfer
-        // payable(msg.sender).transfer(address(this).balance);
 
-        // // send
-        // bool sendSuccess = payable(msg.sender).send(address(this).balance);
-        // require(sendSuccess, "Send failed");
-
-        // call
         (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Call failed");
     }
 
-    /**
-     * Getter Functions
-     */
     function getAddressToAmountFunded(address fundingAddress) public view returns (uint256) {
         return s_addressToAmountFunded[fundingAddress];
     }
@@ -98,18 +69,6 @@ contract FundMe {
         return s_priceFeed;
     }
 
-    // Explainer from: https://solidity-by-example.org/fallback/
-    // Ether is sent to contract
-    //      is msg.data empty?
-    //          /   \
-    //         yes  no
-    //         /     \
-    //    receive()?  fallback()
-    //     /   \
-    //   yes   no
-    //  /        \
-    //receive()  fallback()
-
     fallback() external payable {
         fund();
     }
@@ -118,12 +77,3 @@ contract FundMe {
         fund();
     }
 }
-
-// Concepts we didn't cover yet (will cover in later sections)
-// 1. Enum
-// 2. Events
-// 3. Try / Catch
-// 4. Function Selector
-// 5. abi.encode / decode
-// 6. Hash with keccak256
-// 7. Yul / Assembly

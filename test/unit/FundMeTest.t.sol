@@ -2,7 +2,6 @@
 pragma solidity ^0.8.30;
 
 import {FundMe} from "../../src/FundMe.sol";
-// forge-lint: disable-next-line(unused-import)
 import {Test, console} from "forge-std/Test.sol";
 import {DeployFundMe} from "../../script/DeployFundMe.s.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
@@ -110,7 +109,6 @@ contract FundMeTest is Test {
         uint256 startingFunderIndex = 1;
 
         for (uint256 i = startingFunderIndex; i < numberOfFounders; i++) {
-            // hoax(address, amount) == vm.prank(address) + vm.deal(address, amount)
             address funder = makeAddr(string.concat("funder", vm.toString(i)));
             hoax(funder, SEND_VALUE);
             s_fundMe.fund{value: SEND_VALUE}();
@@ -129,36 +127,13 @@ contract FundMeTest is Test {
         assertEq(numberOfFounders * SEND_VALUE, s_fundMe.getOwner().balance - startingOwnerBalance);
     }
 
-    function testWithdrawFromMultipleFundersCheaper() public funded {
-        uint256 numberOfFounders = 10;
-        uint256 startingFunderIndex = 1;
-
-        for (uint256 i = startingFunderIndex; i < numberOfFounders; i++) {
-            // hoax(address, amount) == vm.prank(address) + vm.deal(address, amount)
-            address funder = makeAddr(string.concat("funder", vm.toString(i)));
-            hoax(funder, SEND_VALUE);
-            s_fundMe.fund{value: SEND_VALUE}();
-        }
-
-        uint256 startingFundMeBalance = address(s_fundMe).balance;
-        uint256 startingOwnerBalance = s_fundMe.getOwner().balance;
-
-        vm.prank(s_fundMe.getOwner());
-        s_fundMe.cheaperWithdraw();
-
-        uint256 endingFundMeBalance = address(s_fundMe).balance;
-        uint256 endingOwnerBalance = s_fundMe.getOwner().balance;
-        assertEq(endingFundMeBalance, 0);
-        assertEq(startingFundMeBalance + startingOwnerBalance, endingOwnerBalance);
-        assertEq(numberOfFounders * SEND_VALUE, s_fundMe.getOwner().balance - startingOwnerBalance);
-    }
-
     function testPrintStorageData() public view {
         for (uint256 i = 0; i < 3; i++) {
             bytes32 value = vm.load(address(s_fundMe), bytes32(i));
             console.log("Value at location", i, ":");
             console.logBytes32(value);
         }
+
         console.log("PriceFeed address:", address(s_fundMe.getPriceFeed()));
     }
 }

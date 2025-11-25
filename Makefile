@@ -1,64 +1,75 @@
 -include .env
 
-.PHONY: all showenv test clean deploy fund help install snapshot format anvil zktest
+.PHONY: all test test-force clean version foundry zkfoundry build build-force anvil zkanvil	stop-anvil stop-zkanvil	zkbuild zkbuild-force
 
-DEFAULT_ANVIL_KEY := 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-DEFAULT_ZKSYNC_LOCAL_KEY := 0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110
-	
-all: clean remove install update build
+all: clean test
 
-# Clean the repo
-clean  :; forge clean
+clean:
+	forge clean \
+	&& rm -rf lib \
+	&& rm -rf cache \
+	&& rm -rf out \
+	&& rm -rf zkout \
+	&& rm -rf *nohup.out \
+	&& rm -rf anvil-zksync.log \
+	&& rm -rf .gas-snapshot
 
-# Remove modules
-remove :; rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"
+install:
+	forge install cyfrin/foundry-devops \
+	&& forge install smartcontractkit/chainlink-brownie-contracts \
+	&& forge install foundry-rs/forge-std
 
-install :; forge install cyfrin/foundry-devops@0.2.2 && forge install smartcontractkit/chainlink-brownie-contracts@1.1.1 && forge install foundry-rs/forge-std@v1.8.2
+build:
+	forge build
 
-# Update Dependencies
-update:; forge update
+zkbuild:
+	forge build --zksync
 
-build:; forge build
+build-force:
+	forge build --force
 
-zkbuild :; forge build --zksync
+zkbuild-force:
+	forge build --force --zksync
 
-test :; forge test
-
-zktest :; foundryup-zksync && forge test --zksync && foundryup
-
-snapshot :; forge snapshot
-
-format :; forge fmt
-
-anvil :; anvil -m 'test test test test test test test test test test test junk' --steps-tracing --block-time 1
-
-zk-anvil :; npx zksync-cli dev start
-
+# Deploy to anvil
 deploy:
-	@forge script script/DeployFundMe.s.sol:DeployFundMe $(NETWORK_ARGS)
+	@forge script script/DeployFundMe.s.sol:DeployFundMe \
+	--rpc-url $(ANVIL_RPC_URL) \
+	--account $(ANVIL_ACCOUNT)	 \
+	--sender $(ANVIL_SENDER) \
+	--broadcast
 
-NETWORK_ARGS := --rpc-url http://localhost:8545 --private-key $(DEFAULT_ANVIL_KEY) --broadcast
+zkdeploy:
+	@forge script script/DeployFundMe.s.sol:DeployFundMe \
+	--rpc-url $(ANVIL_ZKSYNC_RPC_URL) \
+	--account $(ANVIL_ZKSYNC_ACCOUNT) \
+	--sender $(ANVIL_ZKSYNC_SENDER) \
+	--broadcast \
+	--zksync
 
-ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
-	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --account $(ACCOUNT) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
-endif
+test:
+	forge test
 
-deploy-sepolia:
-	@forge script script/DeployFundMe.s.sol:DeployFundMe $(NETWORK_ARGS)
+test-force:
+	forge test --force
+	
+version:
+	forge --version
 
-# As of writing, the Alchemy zkSync RPC URL is not working correctly 
-deploy-zk:
-	forge create src/FundMe.sol:FundMe --rpc-url http://127.0.0.1:8011 --private-key $(DEFAULT_ZKSYNC_LOCAL_KEY) --constructor-args $(shell forge create test/mock/MockV3Aggregator.sol:MockV3Aggregator --rpc-url http://127.0.0.1:8011 --private-key $(DEFAULT_ZKSYNC_LOCAL_KEY) --constructor-args 8 200000000000 --legacy --zksync | grep "Deployed to:" | awk '{print $$3}') --legacy --zksync
+foundry:
+	foundryup
 
-deploy-zk-sepolia:
-	forge create src/FundMe.sol:FundMe --rpc-url ${ZKSYNC_SEPOLIA_RPC_URL} --account default --constructor-args 0xfEefF7c3fB57d18C5C6Cdd71e45D2D0b4F9377bF --legacy --zksync
+zkfoundry:
+	foundryup-zksync
 
+anvil:
+	rm -rf nohup.out && nohup anvil &
 
-# For deploying Interactions.s.sol:FundFundMe as well as for Interactions.s.sol:WithdrawFundMe we have to include a sender's address `--sender <ADDRESS>`
-SENDER_ADDRESS := <sender's address>
- 
-fund:
-	@forge script script/Interactions.s.sol:FundFundMe --sender $(SENDER_ADDRESS) $(NETWORK_ARGS)
+stop-anvil:
+	kill $$(pgrep -f anvil)
 
-withdraw:
-	@forge script script/Interactions.s.sol:WithdrawFundMe --sender $(SENDER_ADDRESS) $(NETWORK_ARGS)
+zkanvil:
+	rm -rf zknohup.out && nohup anvil-zksync > zknohup.out 2>&1 &
+
+stop-zkanvil:
+	kill $$(pgrep -f anvil-zksync)
