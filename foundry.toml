@@ -3,6 +3,8 @@ src = "src"
 out = "out"
 libs = ["lib"]
 remappings = ["@chainlink=lib/chainlink-brownie-contracts/contracts/"]
+no_match_coverage = "test/"
+fs_permissions = [{ access = "read-write", path = "./" }]
 
 [lint]
 exclude_lints = ["screaming-snake-case-immutable", "mixed-case-variable"]

@@ -9,6 +9,8 @@ lib/
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/31337/
+/broadcast/*/12345/
+/broadcast/*/67890/
 /broadcast/**/dry-run/
 
 # Docs

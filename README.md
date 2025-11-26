@@ -122,19 +122,53 @@ The project includes several scripts in the `script` directory:
 
 This project uses a `Makefile` to simplify common tasks:
 
-- `make all`: Clean and run tests.
+- `make all`: Clean, install, format, lint, and run tests.
 - `make clean`: Clean artifacts, cache, and dependencies.
 - `make install`: Install Foundry dependencies.
+- `make update`: Update Foundry dependencies.
+- `make format`: Format the code using `forge fmt`.
+- `make lint`: Lint the code using `forge lint`.
 - `make build`: Compile the project.
 - `make zkbuild`: Compile the project for ZkSync.
 - `make test`: Run tests.
+- `make test-force`: Run tests with `--force`.
+- `make snapshot`: Run gas snapshot.
+- `make coverage`: Run test coverage report.
+- `make coverage-force`: Run test coverage report with `--force`.
 - `make anvil`: Start a local Anvil node.
 - `make zkanvil`: Start a local ZkSync Anvil node.
 - `make deploy`: Deploy to Anvil.
+- `make deploy-sepolia`: Deploy to Sepolia testnet.
+- `make deploy-zksync-sepolia`: Deploy to ZkSync Sepolia testnet.
 - `make zkdeploy`: Deploy to ZkSync Anvil.
 - `make stop-anvil`: Stop the running Anvil node.
 - `make stop-zkanvil`: Stop the running ZkSync Anvil node.
 - `make zkfoundry`: Update Foundry for ZKsync.
+
+## Deployment
+
+### Sepolia Testnet
+
+To deploy to the Sepolia testnet, ensure you have your `.env` file configured with `SEPOLIA_RPC_URL`, `SEPOLIA_ACCOUNT`, `SEPOLIA_SENDER`, and `ETHERSCAN_API_KEY`.
+
+```bash
+make deploy-sepolia
+```
+
+### ZkSync Sepolia Testnet
+
+To deploy to the ZkSync Sepolia testnet, ensure you have your `.env` file configured with `ZKSYNC_SEPOLIA_RPC_URL`, `ZKSYNC_SEPOLIA_ACCOUNT`, `ZKSYNC_SEPOLIA_SENDER`, and `ETHERSCAN_API_KEY`.
+
+```bash
+make deploy-zksync-sepolia
+```
+
+## Code Quality
+
+- **Test Coverage**: The project has high test coverage (~95%), including unit tests for scripts and libraries.
+- **Linting**: Code is linted using `forge lint` to ensure best practices.
+- **Formatting**: Code is formatted using `forge fmt`.
+- **Refactoring**: Magic numbers have been replaced with named constants for better readability.
 
 ## Contributing
 
