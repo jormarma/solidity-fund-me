@@ -49,9 +49,6 @@ contract InteractionsTest is Test {
         FundFundMe fundFundMe = new FundFundMe();
         vm.deal(DEFAULT_SENDER, FUND_AMOUNT);
 
-        // Use a unique chainId to avoid race condition with other tests writing to the same file
-        vm.chainId(MOCK_CHAIN_ID_1);
-
         // Mock the deployment artifact
         _mockDeploymentArtifact(address(fundMe));
 
@@ -65,9 +62,6 @@ contract InteractionsTest is Test {
         FundFundMe fundFundMe = new FundFundMe();
         vm.deal(DEFAULT_SENDER, FUND_AMOUNT);
         fundFundMe.fundFundMe(address(fundMe));
-
-        // Use a unique chainId to avoid race condition
-        vm.chainId(MOCK_CHAIN_ID_2);
 
         // Mock the deployment artifact
         _mockDeploymentArtifact(address(fundMe));
@@ -89,16 +83,10 @@ contract InteractionsTest is Test {
 
         // Ensure directory exists
         string memory chainIdStr = vm.toString(block.chainid);
-        string memory dirPath = string.concat("broadcast/DeployFundMe.s.sol/", chainIdStr);
+        string memory root = vm.projectRoot();
+        string memory dirPath = string.concat(root, "/broadcast/DeployFundMe.s.sol/", chainIdStr);
 
-        // We need to create the directory. vm.writeFile will fail if the directory doesn't exist.
-        // Since we can't easily mkdir from solidity without FFI, and we don't want to enable FFI just for this.
-        // However, we enabled read-write access to "./".
-        // Does vm.writeFile create directories? No.
-        // But we previously created "broadcast/DeployFundMe.s.sol/31337".
-        // We need to create "broadcast/DeployFundMe.s.sol/12345" and "broadcast/DeployFundMe.s.sol/67890".
-        // We can use vm.createDir() if available (it is in newer forge-std/Vm.sol but maybe not this version).
-        // Let's check Vm.sol.
+        vm.createDir(dirPath, true);
 
         string memory path = string.concat(dirPath, "/run-latest.json");
         // forge-lint: disable-next-line(unsafe-cheatcode)
