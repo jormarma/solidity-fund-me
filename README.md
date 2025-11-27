@@ -126,7 +126,8 @@ This project uses a `Makefile` to simplify common tasks:
 - `make clean`: Clean artifacts, cache, and dependencies.
 - `make install`: Install Foundry dependencies.
 - `make update`: Update Foundry dependencies.
-- `make format`: Format the code using `forge fmt`.
+- `make fmt`: Format the code using `forge fmt`.
+- `make fmt-check`: Check if the code is formatted using `forge fmt --check`.
 - `make lint`: Lint the code using `forge lint`.
 - `make build`: Compile the project.
 - `make zkbuild`: Compile the project for ZkSync.

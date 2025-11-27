@@ -15,14 +15,11 @@ contract HelperConfig is Script {
     uint8 public constant MOCK_PRICE_FEED_DECIMALS = 8;
     int256 public constant MOCK_PRICE_FEED_INITIAL_ANSWER = 2000e8;
 
-    address public constant ETH_MAINNET_PRICE_FEED =
-        0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
+    address public constant ETH_MAINNET_PRICE_FEED = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
     uint256 public constant ETH_MAINNET_FEED_VERSION = 6;
-    address public constant SEPOLIA_PRICE_FEED =
-        0x694AA1769357215DE4FAC081bf1f309aDC325306;
+    address public constant SEPOLIA_PRICE_FEED = 0x694AA1769357215DE4FAC081bf1f309aDC325306;
     uint256 public constant SEPOLIA_FEED_VERSION = 4;
-    address public constant ZKSYNC_SEPOLIA_PRICE_FEED =
-        0xfEefF7c3fB57d18C5C6Cdd71e45D2D0b4F9377bF;
+    address public constant ZKSYNC_SEPOLIA_PRICE_FEED = 0xfEefF7c3fB57d18C5C6Cdd71e45D2D0b4F9377bF;
     uint256 public constant ZKSYNC_SEPOLIA_FEED_VERSION = 4;
 
     NetworkConfig public activeNetworkConfig;
@@ -53,50 +50,28 @@ contract HelperConfig is Script {
 
     /// @notice Gets the active network configuration
     /// @return The active network configuration
-    function getActiveNetworkConfig()
-        public
-        view
-        returns (NetworkConfig memory)
-    {
+    function getActiveNetworkConfig() public view returns (NetworkConfig memory) {
         return activeNetworkConfig;
     }
 
     /// @notice Gets the configuration for Ethereum Mainnet
     /// @return The configuration for Ethereum Mainnet
-    function getEthereumMainnetConfig()
-        public
-        pure
-        returns (NetworkConfig memory)
-    {
-        NetworkConfig memory mainnetConfig = NetworkConfig({
-            priceFeed: ETH_MAINNET_PRICE_FEED,
-            feedVersion: ETH_MAINNET_FEED_VERSION
-        });
+    function getEthereumMainnetConfig() public pure returns (NetworkConfig memory) {
+        NetworkConfig memory mainnetConfig =
+            NetworkConfig({priceFeed: ETH_MAINNET_PRICE_FEED, feedVersion: ETH_MAINNET_FEED_VERSION});
         return mainnetConfig;
     }
 
     /// @notice Gets the configuration for Sepolia Testnet
     /// @return The configuration for Sepolia Testnet
     function getSepoliaEthConfig() public pure returns (NetworkConfig memory) {
-        return
-            NetworkConfig({
-                priceFeed: SEPOLIA_PRICE_FEED,
-                feedVersion: SEPOLIA_FEED_VERSION
-            });
+        return NetworkConfig({priceFeed: SEPOLIA_PRICE_FEED, feedVersion: SEPOLIA_FEED_VERSION});
     }
 
     /// @notice Gets the configuration for ZkSync Sepolia Testnet
     /// @return The configuration for ZkSync Sepolia Testnet
-    function getZkSyncSepoliaEthConfig()
-        public
-        pure
-        returns (NetworkConfig memory)
-    {
-        return
-            NetworkConfig({
-                priceFeed: ZKSYNC_SEPOLIA_PRICE_FEED,
-                feedVersion: ZKSYNC_SEPOLIA_FEED_VERSION
-            });
+    function getZkSyncSepoliaEthConfig() public pure returns (NetworkConfig memory) {
+        return NetworkConfig({priceFeed: ZKSYNC_SEPOLIA_PRICE_FEED, feedVersion: ZKSYNC_SEPOLIA_FEED_VERSION});
     }
 
     /// @notice Gets or creates the configuration for Anvil (local)
@@ -107,16 +82,11 @@ contract HelperConfig is Script {
         }
 
         vm.startBroadcast();
-        mockPriceFeed = new MockV3Aggregator(
-            MOCK_PRICE_FEED_DECIMALS,
-            MOCK_PRICE_FEED_INITIAL_ANSWER
-        );
+        mockPriceFeed = new MockV3Aggregator(MOCK_PRICE_FEED_DECIMALS, MOCK_PRICE_FEED_INITIAL_ANSWER);
         vm.stopBroadcast();
 
-        NetworkConfig memory anvilConfig = NetworkConfig({
-            priceFeed: address(mockPriceFeed),
-            feedVersion: mockPriceFeed.version()
-        });
+        NetworkConfig memory anvilConfig =
+            NetworkConfig({priceFeed: address(mockPriceFeed), feedVersion: mockPriceFeed.version()});
 
         return anvilConfig;
     }

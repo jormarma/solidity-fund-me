@@ -10,10 +10,8 @@ library PriceConverter {
     /// @notice Gets the price of ETH in USD
     /// @param priceFeed The Chainlink Price Feed interface
     /// @return The price of ETH in USD
-    function getPrice(
-        AggregatorV3Interface priceFeed
-    ) internal view returns (uint256) {
-        (, int256 answer, , , ) = priceFeed.latestRoundData();
+    function getPrice(AggregatorV3Interface priceFeed) internal view returns (uint256) {
+        (, int256 answer,,,) = priceFeed.latestRoundData();
         require(answer >= 0, "Price must be positive");
 
         // ETH/USD rate in 18 digits
@@ -26,10 +24,7 @@ library PriceConverter {
     /// @param ethAmount The amount of ETH to convert
     /// @param priceFeed The Chainlink Price Feed interface
     /// @return The amount of ETH in USD
-    function getConversionRate(
-        uint256 ethAmount,
-        AggregatorV3Interface priceFeed
-    ) internal view returns (uint256) {
+    function getConversionRate(uint256 ethAmount, AggregatorV3Interface priceFeed) internal view returns (uint256) {
         uint256 ethPrice = getPrice(priceFeed);
         uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1e18;
         return ethAmountInUsd;

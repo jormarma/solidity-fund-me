@@ -22,8 +22,11 @@ install:
 update:
 	forge update
 
-format: install
+fmt: install
 	forge fmt
+
+fmt-check: install
+	forge fmt --check
 
 lint: install
 	forge lint

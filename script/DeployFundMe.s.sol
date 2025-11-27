@@ -14,9 +14,7 @@ contract DeployFundMe is Script {
     /// @return helperConfig The HelperConfig contract used for configuration
     function run() external returns (FundMe fundMe, HelperConfig helperConfig) {
         helperConfig = new HelperConfig();
-        address priceFeedAddress = helperConfig
-            .getActiveNetworkConfig()
-            .priceFeed;
+        address priceFeedAddress = helperConfig.getActiveNetworkConfig().priceFeed;
 
         vm.startBroadcast();
         fundMe = new FundMe(priceFeedAddress);
