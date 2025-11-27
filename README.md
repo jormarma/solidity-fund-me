@@ -1,5 +1,10 @@
 # Fund Me
 
+[![CI](https://github.com/jormarma/solidity-fund-me/actions/workflows/test.yml/badge.svg)](https://github.com/jormarma/solidity-fund-me/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Solidity](https://img.shields.io/badge/Solidity-^0.8.30-363636.svg)
+![Foundry](https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg)
+
 **Fund Me** is a decentralized crowdfunding application built with Solidity and Foundry. It allows users to fund the contract with ETH, ensuring a minimum USD value using Chainlink Price Feeds. The contract owner can then withdraw the accumulated funds.
 
 ## Features
