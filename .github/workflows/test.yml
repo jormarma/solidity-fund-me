@@ -16,7 +16,7 @@ jobs:
     name: Foundry project
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
           submodules: recursive
@@ -26,6 +26,12 @@ jobs:
 
       - name: Show Forge version
         run: forge --version
+
+      - name: Install dependencies
+        run: |
+          forge install cyfrin/foundry-devops
+          forge install smartcontractkit/chainlink-brownie-contracts
+          forge install foundry-rs/forge-std
 
       - name: Run Forge fmt
         run: forge fmt --check
